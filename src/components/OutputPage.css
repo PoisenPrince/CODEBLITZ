@@ -1,0 +1,21 @@
+.output-page {
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+.total-cost {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 1rem;
+}
+
+.chart-section {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.suggestions ul {
+  margin-top: 1rem;
+  line-height: 1.5;
+}
