@@ -29,9 +29,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 
-# Serve static frontend files
-app.mount("/", StaticFiles(directory="construction-estimator/dist", html=True), name="static")
+# # Serve static frontend files
+# app.mount("/", StaticFiles(directory="construction-estimator/dist", html=True), name="static")
 
-@app.get("/")
-async def serve_react_app():
-    return FileResponse("construction-estimator/dist/index.html")
+# @app.get("/")
+# async def serve_react_app():
+#     return FileResponse("construction-estimator/dist/index.html")
