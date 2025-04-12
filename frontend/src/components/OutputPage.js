@@ -1,5 +1,6 @@
 // src/components/OutputPage.js
-import React from 'react';
+// src/components/OutputPage.js
+import React, { useEffect, useState } from 'react';
 import './OutputPage.css';
 import './MultiStepForm.css';
 
@@ -18,21 +19,49 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 const OutputPage = ({ formData }) => {
   const { projectInfo } = formData;
+  const [costDistribution, setCostDistribution] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Mock calculation (replace with real logic later or after ML)
-  const costDistribution = {
-    materials: 50000,
-    labor: 30000,
-    location: 10000,
-    misc: 5000,
-  };
+  useEffect(() => {
+    const fetchPrediction = async () => {
+      try {
+        const response = await fetch('https://codeblitz-1-a3np.onrender.com/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setCostDistribution(data); // This assumes your backend returns an object like { materials: ..., labor: ..., etc }
+      } catch (err) {
+        console.error('Error:', err);
+        setError('Failed to fetch estimated cost. Please try again later.');
+      }
+    };
+
+    fetchPrediction();
+  }, [formData]);
+
+  if (error) return <p>{error}</p>;
+  if (!costDistribution) return <p>Calculating estimated cost...</p>;
 
   const pieData = {
     labels: ['Materials', 'Labor', 'Location Factors', 'Miscellaneous'],
     datasets: [
       {
         label: 'Cost Distribution',
-        data: Object.values(costDistribution),
+        data: [
+          costDistribution.materials,
+          costDistribution.labor,
+          costDistribution.location,
+          costDistribution.misc,
+        ],
         backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
       },
     ],
@@ -43,7 +72,12 @@ const OutputPage = ({ formData }) => {
     datasets: [
       {
         label: 'Cost Breakdown',
-        data: Object.values(costDistribution),
+        data: [
+          costDistribution.materials,
+          costDistribution.labor,
+          costDistribution.location,
+          costDistribution.misc,
+        ],
         backgroundColor: '#4e73df',
       },
     ],
@@ -73,3 +107,4 @@ const OutputPage = ({ formData }) => {
 };
 
 export default OutputPage;
+
